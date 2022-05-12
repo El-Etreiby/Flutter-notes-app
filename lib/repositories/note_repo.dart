@@ -12,18 +12,17 @@ class NotesRepository{ //not a DB!!! for business logic.
   Future<Note> addNote(Note note){
   return apiClient.addNote(note);
 }
-void editNote(Note note, int id){
-    apiClient.updateNote(note, id);
+  Future<void> editNote(Note note, int id) async{
+    await apiClient.updateNote(note, id);
 }
 
 Future<List<NoteResponse>> getNotes() async{
     List<NoteResponse> notes = await apiClient.getNotes();
-    print("@ repo");
-    print(notes.length);
   return notes;
 }
 
-Future<String> deleteNote(Note note, int id){
-    return apiClient.deleteNote(note, id);
+  Future<void> deleteNote(NoteResponse note){
+    Note toBeSent = Note(title: note.title, content: note.content);
+     return apiClient.deleteNote(toBeSent, note.id);
 }
 }

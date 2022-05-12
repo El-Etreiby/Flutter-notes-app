@@ -28,11 +28,31 @@ class _EditNoteScreen extends State<EditNoteScreen> {
   final _contentController = TextEditingController();
 
   late final EditNoteCubit editNoteCubit = locator();
-
+  late NoteResponse oldNote;
 
 
   final _formKey = GlobalKey<FormState>();
-
+@override
+  void initState(){
+    super.initState();
+    // oldNote = ModalRoute.of(context)!.settings.arguments as NoteResponse;
+    //todo
+    // _contentController.text=
+    //scaffold wrapping whole page
+    //
+    // _titleController.value = TextEditingValue(
+    //   text: oldNote.title,
+    //   selection: TextSelection.fromPosition(
+    //     TextPosition(offset: oldNote.title.length),
+    //   ),
+    // );
+    // _contentController.value = TextEditingValue(
+    //   text: oldNote.content,
+    //   selection: TextSelection.fromPosition(
+    //     TextPosition(offset: oldNote.content.length),
+    //   ),
+    // );
+}
 
   Future<Note> editNote(String title, String content, BuildContext context, int id) async {
     Note toBeSent = Note(content: content, title: title);
@@ -41,28 +61,21 @@ class _EditNoteScreen extends State<EditNoteScreen> {
     return result;
   }
 
-  void _handleSubmitted(String title, String content) {
-    _titleController.clear();
-    _contentController.clear();
-    Navigator.pushReplacementNamed(context, '/');
-  }
 
   @override
   Widget build(BuildContext context) {
-    final oldNote = ModalRoute.of(context)!.settings.arguments as NoteResponse;
-    _titleController.value = TextEditingValue(
-      text: oldNote.title,
-      selection: TextSelection.fromPosition(
-        TextPosition(offset: oldNote.title.length),
-      ),
-    );
-    _contentController.value = TextEditingValue(
-      text: oldNote.content,
-      selection: TextSelection.fromPosition(
-        TextPosition(offset: oldNote.content.length),
-      ),
-    );
-    return BlocListener<EditNoteCubit, EditNoteState>(
+    oldNote = ModalRoute.of(context)!.settings.arguments as NoteResponse;
+_titleController.text=oldNote.title;
+_contentController.text=oldNote.content;
+    return
+      Scaffold(
+        appBar: AppBar(
+          title: const Text('edit note'),
+          backgroundColor: Colors.yellow[750],
+        ),
+
+        body: BlocListener<EditNoteCubit, EditNoteState>(
+          bloc: editNoteCubit,
   listener: (context, state) {
     if(state is EditNotesInitial){
       const Text('loading');
@@ -70,12 +83,8 @@ class _EditNoteScreen extends State<EditNoteScreen> {
       Navigator.pushReplacementNamed(context, '/');
     }
   },
-  child: Scaffold(
-      appBar: AppBar(
-        title: const Text('edit note'),
-        backgroundColor: Colors.yellow[750],
-      ),
-      body: Form(
+  child:
+       Form(
         key: _formKey,
         child: Column(
           children: <Widget>[
@@ -135,11 +144,10 @@ class _EditNoteScreen extends State<EditNoteScreen> {
 
 
                   if (_formKey.currentState!.validate()) {
-                    Note note = await editNote(_titleController.text, _contentController.text,context, oldNote.id);
-                   Note toBeSent = Note(title: note.title, content: note.content);
-                    _handleSubmitted(
-                        _titleController.text, _contentController.text);
-                    BlocProvider.of<EditNoteCubit>(context).editNote(note, oldNote.id);
+                    Note note = Note(title: _titleController.text,content: _contentController.text);
+                    _titleController.clear();
+                    _contentController.clear();
+                    editNoteCubit.editNote(note, oldNote.id);
                   }
                 },
               ),

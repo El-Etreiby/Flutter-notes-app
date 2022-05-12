@@ -24,51 +24,30 @@ class _AddNoteScreen extends State<AddNoteScreen> {
   final _contentController = TextEditingController();
   late final AddNoteCubit addNoteCubit = locator();
 
-
-  Future<Note> addNote(String title, String content, BuildContext context) async {
-
-    Note note = Note(content: content, title: title);
-    // var response = addNoteCubit.addNote(note);
-    Future<Note> result = Future(() => note);
-    return result;
-  }
-
-
   bool _isComposingTitle = false;
   bool _isComposingContent = false;
 
   final _formKey = GlobalKey<FormState>();
 
-  void _handleSubmitted(String title, String content) {
-    _titleController.clear();
-    _contentController.clear();
-    if (!_isComposingContent || !_isComposingTitle) {
-      _isComposingTitle = false;
-      _isComposingContent = false; // NEW
-      return;
-    }
-    _isComposingTitle = false;
-    _isComposingContent = false;
-
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AddNoteCubit, AddNoteState>(
+    return
+      Scaffold(
+        appBar: AppBar(
+          title: const Text('new note'),
+          backgroundColor: Colors.yellow[750],
+        ),
+        body:
+        BlocListener<AddNoteCubit, AddNoteState>(
+          bloc: addNoteCubit,
       listener: (context, state) {
             if(state is NotesInitial){
-              print('init state');
               const Text('loading');
             } if(state is NotesLoaded){
               Navigator.pushReplacementNamed(context, '/');
             }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('new note'),
-          backgroundColor: Colors.yellow[750],
-        ),
-        body: Form(
+      child: Form(
           key: _formKey,
           child: Column(
             children: <Widget>[
@@ -128,12 +107,11 @@ class _AddNoteScreen extends State<AddNoteScreen> {
                   label: const Text('add note'),
                   onPressed: () async{
 
-                    Note note = await addNote(_titleController.text, _contentController.text,context);
-
+                    Note note = Note(title: _titleController.text,content: _contentController.text);
                     if (_formKey.currentState!.validate()) {
-                      BlocProvider.of<AddNoteCubit>(context).addNote(note);
-                      _handleSubmitted(
-                          _titleController.text, _contentController.text);
+                      addNoteCubit.addNote(note);
+                      _titleController.clear();
+                      _contentController.clear();
                     }
 
                   },

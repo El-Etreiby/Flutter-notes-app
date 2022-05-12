@@ -15,10 +15,11 @@ class EditNoteCubit extends Cubit<EditNoteState> {
   final NotesRepository notesRepository;
   EditNoteCubit(this.notesRepository) : super(EditNotesInitial());
 
-  void editNote(Note note, int id) async {
+  Future<void> editNote(Note note, int id) async {
 
     emit(EditNotesInitial());
-    notesRepository.editNote(note, id);
+    await notesRepository.editNote(note, id);
     emit(EditNotesLoaded());
+
   }
 }

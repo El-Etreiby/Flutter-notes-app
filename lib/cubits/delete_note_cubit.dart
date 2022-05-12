@@ -16,16 +16,9 @@ class DeleteNoteCubit extends Cubit<DeleteNoteState> {
   final NotesRepository notesRepository;
   DeleteNoteCubit(this.notesRepository) : super(DeleteNotesInitial());
 
-  void deleteNote(Note note, int id) async {
+  Future<void> deleteNote(NoteResponse note) async {
     emit(DeleteNotesInitial());
-    String message = await notesRepository.deleteNote(note,id);
-    List<NoteResponse> notesList = await notesRepository.getNotes();
-    List<Note> toBeDisplayed = <Note>[];
-    for(int i = 0; i < notesList.length; i++){
-      toBeDisplayed.add(Note(title: notesList.elementAt(i).title,content: notesList.elementAt(i).content));
-    }
-    emit(DeleteNotesLoaded(toBeDisplayed));
-
-
+    await notesRepository.deleteNote(note);
+    emit(DeleteNotesLoaded());
   }
 }

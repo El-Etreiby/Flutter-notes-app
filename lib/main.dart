@@ -35,16 +35,18 @@ class NotesApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => AddNoteCubit(locator())),
-        BlocProvider(create: (context) => DeleteNoteCubit(locator())),
-        BlocProvider(create: (context) => EditNoteCubit(locator())),
-      ],
+    return
+      // MultiBlocProvider(
+      // providers: [
+      //   BlocProvider(create: (context) => AddNoteCubit(locator())),
+      //   BlocProvider(create: (context) => DeleteNoteCubit(locator())),
+      //   BlocProvider(create: (context) => EditNoteCubit(locator())),
+      // ],
 
           //inject cubits, naming conventions, seperate backend calls(Repo), http calls.
 
-          child: MaterialApp(
+          // child:
+    MaterialApp(
             // home: const HomePage(),
             theme: notesTheme,
             routes: {
@@ -53,7 +55,7 @@ class NotesApp extends StatelessWidget {
               '/': (context) => HomePage(),
             },
             initialRoute: '/',
-          ),
+          // ),
     );
   }
 }

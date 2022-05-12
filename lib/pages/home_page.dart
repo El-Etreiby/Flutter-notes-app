@@ -1,16 +1,13 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:notes_with_cubit/locator.dart';
-
 import '../models/note.dart';
 import '../cubits/add_notes_cubit.dart';
 import '../repositories/note_repo.dart';
 import '../responses/note_response.dart';
 import '../widgets/notes_card.dart';
-
 import 'package:http/http.dart' as http;
 
 
@@ -43,14 +40,13 @@ class _HomePageState extends State<HomePage> {
         child: FutureBuilder<List<NoteResponse>?>(
           future: getNotes(),
           builder: (BuildContext context, AsyncSnapshot snapshot){
-            if(snapshot.hasError){
+            if(snapshot.hasError){ //todo err handling
               return Text("${snapshot.error}");
             }
             if(!snapshot.hasData){
               return const Center(child: Icon(Icons.error));
             }
-            print("home");
-            print(snapshot.data);
+
             return MasonryGridView.count(
               crossAxisCount: 4,
               itemCount: snapshot.data.length,
@@ -71,22 +67,5 @@ class _HomePageState extends State<HomePage> {
     child: const Icon(Icons.add),
     ),
     );
-    //   body:  MasonryGridView.count(
-    //     crossAxisCount: 4,
-    //     itemCount: notes.length,
-    //     mainAxisSpacing: 4,
-    //     crossAxisSpacing: 4,
-    //     itemBuilder: (context, index) {
-    //       return NotesCard(note: notes[index]);
-    //     },
-    //   ),
-    //   floatingActionButton: FloatingActionButton(
-    //     onPressed: () {
-    //       Navigator.pushReplacementNamed(context, '/addnote');
-    //     },
-    //     tooltip: 'Add Note',
-    //     child: const Icon(Icons.add),
-    //   ),
-    // );
   }
 }

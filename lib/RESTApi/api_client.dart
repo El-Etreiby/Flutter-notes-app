@@ -26,6 +26,6 @@ abstract class APIClient{ //not a DB!!! for business logic.
   Future<void> updateNote(@Body() Note note, @Path("id") int id);
 
   @DELETE('note/{id}')
-  Future<String> deleteNote(@Body() Note note, @Path("id") int id);
+  Future<void> deleteNote(@Body() Note note, @Path("id") int id);
 
 }

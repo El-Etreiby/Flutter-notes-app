@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubits/delete_note_cubit.dart';
+import '../locator.dart';
 import '../models/note.dart';
 import '../pages/edit_note_screen.dart';
 import '../responses/note_response.dart';
@@ -14,23 +15,18 @@ import 'package:http/http.dart' as http;
 
 class NotesCard extends StatelessWidget { //getNoteResponse must have id variable
   final NoteResponse note;
-
-  const NotesCard({Key? key, required this.note}) : super(key: key);
+  final DeleteNoteCubit deleteCubit = locator();
+  NotesCard({Key? key, required this.note}) : super(key: key);
 
   deleteNote(NoteResponse note) async{
-    final url = Uri.parse('http://localhost:8080/deletenote');
-    final request = http.Request("DELETE",url);
-    request.headers.addAll(<String,String>{
-      "Content-Type" : "application/json"
-    });
-    request.body = jsonEncode(note);
-    final response = await request.send();
+    await deleteCubit.deleteNote(note);
   }
 
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<DeleteNoteCubit, DeleteNoteState>(
+      bloc: deleteCubit,
       listener: (context, state) {
         if(state is DeleteNotesInitial){
           const Text('loading');
@@ -83,9 +79,7 @@ class NotesCard extends StatelessWidget { //getNoteResponse must have id variabl
                             tooltip: 'delete note',
                             color: Colors.red,
                             onPressed: () {
-                              Note toBeSent = Note(title: note.title, content: note.content);
-                              BlocProvider.of<DeleteNoteCubit>(context).deleteNote(toBeSent, note.id);
-                              deleteNote(note);
+                              deleteCubit.deleteNote(note);
                             },
                           ),
                         ]),
